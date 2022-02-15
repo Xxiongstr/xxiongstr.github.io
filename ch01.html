@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap-3.3.7.css">
+    <script src="js/vue-2.4.0(1).js"></script>
+    <script src="js/vue-router v3.5.3.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=8BxTYD60Y5enCrOsAhEfIAi6ZIkoWdrL"></script>
+</head>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        list-style-type: none;
+        font-size: 20px;
+        color: black;    }
+
+    #mine {
+        width: 100%;
+        height: 500px;
+    }
+
+    #left,
+    #right {
+        float: left;
+    }
+
+    #left {
+        width: 20%;
+        height: 500px;
+        background-color: cyan;
+    }
+
+    #right {
+        width: 80%;
+        height: 500px;
+        background-color: blanchedalmond;
+        text-align: center;
+    }
+
+    #top h1 {
+        font-size: 100px;
+        color: white;
+        font-style: italic;
+        text-align: center;
+    }
+
+    #left ul li {
+        height: 80px;
+        text-align: center;
+        line-height: 80px
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td,
+    th {
+        border: 1px solid #eee;
+        line-height: 35px;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #ddd;
+    }
+
+    td {
+        text-align: center;
+    }
+
+    #myModal input {
+        width: 130px;
+
+    }
+
+    img {
+        width: 70px;
+        height: 45px;
+        margin: 5px;
+    }
+    #mapbaidu{
+        width: 80%;
+        height: 500px;
+        -webkit-filter: grayscale(100%);
+        filter:grayscale(50%)
+    }
+</style>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+    </div>
+    <template id="temp">
+        <div>
+            <nav class="navbar navbar-default" style="background-color:brown; height: 100px; line-height: 100px;">
+                <div>
+                    <center style="font-size: 50px; color: ivory;">图书管理系统</center>
+                </div>
+            </nav>
+            <div id="mine" style="margin-top: -20px;">
+                <div id="left"> 
+                    <ul class="nav nav-tabs nav-stacked">
+                        <li>
+                            <router-link to="/one">程序1</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/two">程序2</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/three">程序3</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/four">程序4</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/fiv">程序5</router-link>
+                        </li>
+                    </ul>
+                </div>
+                <div id="right">
+                    <router-view></router-view>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="one">
+        <div>
+            <h1 style="text-align: center; font-size: 40px;">用户管理系统·程序一</h1>
+            <label>id:<input type="text" v-model="id" class="form-control" style="width: 100%;"></label>
+            <label>name:<input type="text" v-model="name" class="form-control" style="width: 100%;"></label>
+            <label>age:<input type="text" v-model="age" class="form-control" style="width: 100%;"></label>
+            <button @click="tianjia" class="btn btn-primary">添加</button>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>姓名</th>
+                        <th>年龄</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,i) in list" key="item.id">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.age}}</td>
+                        <td style="width: 300px;"><a href="#" @click="updata(i)">修改</a> | <a href="#"
+                                @click.pervent="del(i)">删除</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
+    <template id="two">
+        <div>
+            <div>
+                <h1 style="text-align: center; font-size: 40px;">淘宝结算页面·程序二</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>商品信息</th>
+                            <th>获取积分</th>
+                            <th>单价（元）</th>
+                            <th>数量</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,i) in list" :key="item.id">
+                            <td><img :src="item.src"></td>
+                            <td>{{item.obs}}</td>
+                            <td>{{item.pice}}</td>
+                            <td><a href="#" @click="addout(i)" style="background-color: lightgray; width: 30px;">－</a>
+                                <input type="text" class="num" :value="item.shu" disabled="disabled"
+                                    style="width: 50px; text-align: center;" />
+                                <a href="#" @click="add(i)" style="background-color: lightgray;">＋</a></td>
+                            <td>
+                                <a href="#" @click="del(i)">删除</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+    <template id="three">
+        <div id="mapbaidu">
+
+        </div>
+        <script type="text/javascript">
+            var map = new BMap.Map('mapbaidu');
+            map.centerAndZoom(new BMap.point(117.309531,30.59619),50)
+            map.addContorl(new BMap.MapTypeContorl());
+            map.setVurrentCity('武汉');
+            map.enableScrollWheelZoom(true);
+        </script>
+    </template>
+</body>
+<script>
+    var temp = {
+        template: '#temp'
+    }
+    var one = {
+        data() {
+            return {
+                id: '',
+                name: '',
+                age: '',
+                list: [{
+                        id: 1,
+                        name: '张三',
+                        age: 16
+                    },
+                    {
+                        id: 2,
+                        name: '李四',
+                        age: 14
+                    },
+                    {
+                        id: 3,
+                        name: '王五',
+                        age: 14
+                    },
+                    {
+                        id: 4,
+                        name: '张六',
+                        age: 66
+                    },
+                    {
+                        id: 5,
+                        name: '五区',
+                        age: 77
+                    },
+                ]
+            }
+        },
+        template: '#one',
+        created() {
+            this.addd()
+        },
+        methods: {
+            addd() {
+                var logs = JSON.parse(localStorage.getItem('cmts') || ('[]'))
+                localStorage.setItem('cmts',JSON.stringify(this.list))
+                this.list = logs
+            },
+            del(index) {
+                var logs = JSON.parse(localStorage.getItem('cmts') || ('[]'))
+                logs.splice(index, 1)
+                localStorage.setItem('cmts', JSON.stringify(logs))
+                this.addd()
+            },
+            updata(index) {
+                this.$router.push('/news?index=' + index)
+            },
+            tianjia(){
+                
+            }
+        },
+    }
+    var news = {
+        data() {
+            return {
+                id: '',
+                name: '',
+                age: '',
+                index: this.$route.query.index
+            }
+        },
+        template: `
+            <div>
+                <ul class="list-inline">
+                    <li>ID<input type="text" class="form-control" id="id" v-model="id" style="width: 100%;" disabled></li>
+                    <li>NAME<input type="text" class="form-control" id="name" v-model="name" style="width: 100%;"></li>
+                    <li>AGE<input type="text" class="form-control" id="age" v-model="age" style="width: 100%;"></li>
+                    <button class="btn btn-primary" @click="sub">提交</button>
+                    <button class="btn btn-primary" @click="re">返回</button>
+                </ul>
+            </div>
+        `,
+        created() {
+            var list = JSON.parse(localStorage.getItem('cmts') || ('[]'))
+            this.id = list[this.index].id
+            this.name = list[this.index].name
+            this.age = list[this.index].age
+        },
+        methods: {
+            sub() {
+                var list = JSON.parse(localStorage.getItem('cmts') || ('[]'))
+                list[this.index].id = this.id
+                list[this.index].name = this.name
+                list[this.index].age = this.age
+                localStorage.setItem('cmts', JSON.stringify(list))
+                this.$router.push('/one/')
+            },
+            re() {
+                this.$router.push('/one/')
+            }
+        }
+    }
+    var two = {
+        data() {
+            return {
+                list: [{
+                        id: 1,
+                        src: './img/a.jpg',
+                        obs: 5,
+                        pice: 1000,
+                        shu: 0
+                    },
+                    {
+                        id: 2,
+                        src: './img/b.jpg',
+                        obs: 12,
+                        pice: 100,
+                        shu: 0
+                    },
+                    {
+                        id: 3,
+                        src: './img/c.jpg',
+                        obs: 20,
+                        pice: 150,
+                        shu: 0
+                    },
+                    {
+                        id: 4,
+                        src: './img/d.jpg',
+                        obs: 1,
+                        pice: 3500,
+                        shu: 0
+                    },
+                    {
+                        id: 5,
+                        src: './img/e.jpg',
+                        obs: 6,
+                        pice: 1200,
+                        shu: 0
+                    },
+                ]
+            }
+        },
+        template: '#two',
+        created(){
+            this.adddd()
+        }, 
+        methods:{
+            adddd(){
+                var logs = JSON.parse(localStorage.getItem('cmtd')||('[]'))
+                localStorage.setItem('cmtd',JSON.stringify(this.list))
+                this.list=logs
+            },
+            add(index){
+                var logs = JSON.parse(localStorage.getItem('cmtd')||('[]'))
+                logs = this.list
+                this.list[index].shu++
+                localStorage.setItem('cmtd',JSON.stringify(logs))
+            },
+            addout(index){
+                var logs = JSON.parse(localStorage.getItem('cmtd')||('[]'))
+                logs = this.list
+                this.list[index].shu--
+                if(this.list[index].shu<0){
+                    this.list.splice(index,1)
+                    alert('低于最低数，已删除')
+                }
+                localStorage.setItem('cmtd',JSON.stringify(logs))
+                
+            },
+            del(index){
+                var logs = JSON.parse(localStorage.getItem('cmtd')||('[]'))
+                logs.splice(index,1)
+                localStorage.setItem('cmtd',JSON.stringify(logs))
+                this.adddd()
+            }
+        }
+    }
+    var three = {
+        template: '#three'
+    }
+    var four = {
+        template: '<h1 style="text-align: center; font-size: 40px;">程序四</h1>'
+    }
+    var fiv = {
+        template: '<h1 style="text-align: center; font-size: 40px;">程序五</h1>'
+    }
+    var router = new VueRouter({
+        routes: [{
+            path: '/',
+            component: temp,
+            redirect: '/two',
+            children: [{
+                    path: 'one',
+                    component: one
+                },
+                {
+                    path: 'news',
+                    component: news
+                },
+                {
+                    path: 'two',
+                    component: two
+                },
+                {
+                    path: 'three',
+                    component: three
+                },
+                {
+                    path: 'four',
+                    component: four
+                },
+                {
+                    path: 'fiv',
+                    component: fiv
+                }
+            ]
+        }]
+
+    })
+    var vm = new Vue({
+        el: '#app',
+        data: {
+
+        },
+        methods: {
+
+        },
+        router,
+    })
+</script>
+
+</html>
